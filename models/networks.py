@@ -1,5 +1,5 @@
 import torch
-import torch.nn as nn
+import torch.nn as nnf
 from torch.nn import init
 import functools
 from torch.optim import lr_scheduler
@@ -554,8 +554,8 @@ class NLayerDiscriminator(nn.Module):
         else:
             use_bias = norm_layer == nn.InstanceNorm2d
 
-        kw = 4
-        padw = 1
+        kw = 3
+        padw = 0
         #sequence = [nn.Conv2d(input_nc, ndf, kernel_size=kw, stride=2, padding=padw), nn.LeakyReLU(0.2, True)]
         sequence = [nn.Conv2d(input_nc, ndf, kernel_size=kw, stride=1, padding=padw), nn.LeakyReLU(0.2, True)]
         nf_mult = 1
