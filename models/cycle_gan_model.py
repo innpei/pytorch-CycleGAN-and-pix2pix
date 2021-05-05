@@ -51,10 +51,16 @@ weights_0 = b
 #weights_0 = pool2(weights_0)
 #weights_0 = pool3(weights_0)
 
-pool1 = torch.nn.AvgPool2d(2)
+pool1 = torch.nn.AvgPool2d(3, stride=1)
 pool2 = torch.nn.AvgPool2d(3, stride=1)
+pool3 = torch.nn.AvgPool2d(3, stride=1)
+pool4 = torch.nn.AvgPool2d(3, stride=1)
+pool5 = torch.nn.AvgPool2d(3, stride=1)
 weights_0 = pool1(weights_0)
 weights_0 = pool2(weights_0)
+weights_0 = pool3(weights_0)
+weights_0 = pool4(weights_0)
+weights_0 = pool5(weights_0)
 
 
 class CycleGANModel(BaseModel):
