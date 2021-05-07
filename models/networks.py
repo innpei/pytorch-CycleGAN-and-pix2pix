@@ -253,6 +253,7 @@ class GANLoss(nn.Module):
             target_tensor = self.real_label
         else:
             target_tensor = self.fake_label
+        print(prediction.shape)
         return target_tensor.expand_as(prediction)
 
     def __call__(self, prediction, target_is_real):
