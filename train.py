@@ -106,4 +106,4 @@ for i, ax in enumerate(axes.flat, start=1):
   ax.set_ylabel('Loss value')
 
 fig.tight_layout()
-plt.show()
+plt.show();
