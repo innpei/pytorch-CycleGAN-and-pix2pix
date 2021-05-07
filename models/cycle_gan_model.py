@@ -25,23 +25,22 @@ for lip_h in range(int(h*7/10 ),int(h*8.5/10)):
         a[0][1][lip_h][lip_w] = 7
         a[0][2][lip_h][lip_w] = 7
 weights_1 = a        
-cuda0 = torch.device('cuda:0')
 
 #b = torch.ones([1, 1, 256, 256], dtype=torch.float, device=cuda0)
-b = torch.ones([1, 1, 64, 64], dtype=torch.float, device=cuda0)
-h = b.shape[2]
-w = b.shape[3]
-for eye_h in range(int(h*2/10),int(h*4.5/10)):
-    for eye_left in range(int(w*2/10 ),int(w*4/10)):
-        b[0][0][eye_h][eye_left] = 7
-    for eye_right in range(int(w*6/10 ),int(w*8/10)):
-        b[0][0][eye_h][eye_right] = 7
+# b = torch.ones([1, 1, 64, 64], dtype=torch.float, device=cuda0)
+# h = b.shape[2]
+# w = b.shape[3]
+# for eye_h in range(int(h*2/10),int(h*4.5/10)):
+#     for eye_left in range(int(w*2/10 ),int(w*4/10)):
+#         b[0][0][eye_h][eye_left] = 7
+#     for eye_right in range(int(w*6/10 ),int(w*8/10)):
+#         b[0][0][eye_h][eye_right] = 7
 
-for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
-    for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
-        b[0][0][lip_h][lip_w] = 7
+# for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
+#     for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
+#         b[0][0][lip_h][lip_w] = 7
                 
-weights_0 = b
+# weights_0 = b
         
         
 #pool1 = torch.nn.AvgPool2d(4)
@@ -51,16 +50,16 @@ weights_0 = b
 #weights_0 = pool2(weights_0)
 #weights_0 = pool3(weights_0)
 
-pool1 = torch.nn.AvgPool2d(3, stride=1)
-pool2 = torch.nn.AvgPool2d(3, stride=1)
-pool3 = torch.nn.AvgPool2d(3, stride=1)
-pool4 = torch.nn.AvgPool2d(3, stride=1)
-pool5 = torch.nn.AvgPool2d(3, stride=1)
-weights_0 = pool1(weights_0)
-weights_0 = pool2(weights_0)
-weights_0 = pool3(weights_0)
-weights_0 = pool4(weights_0)
-weights_0 = pool5(weights_0)
+# pool1 = torch.nn.AvgPool2d(3, stride=1)
+# pool2 = torch.nn.AvgPool2d(3, stride=1)
+# pool3 = torch.nn.AvgPool2d(3, stride=1)
+# pool4 = torch.nn.AvgPool2d(3, stride=1)
+# pool5 = torch.nn.AvgPool2d(3, stride=1)
+# weights_0 = pool1(weights_0)
+# weights_0 = pool2(weights_0)
+# weights_0 = pool3(weights_0)
+# weights_0 = pool4(weights_0)
+# weights_0 = pool5(weights_0)
 
 
 class CycleGANModel(BaseModel):
@@ -189,36 +188,15 @@ class CycleGANModel(BaseModel):
         We also call loss_D.backward() to calculate the gradients.
         """
         # Real
-        ####################################################################
-                
-#         cuda0 = torch.device('cuda:0')
-#         b = torch.ones([1, 1, 256, 256], dtype=torch.float, device=cuda0)
-#         h = b.shape[2]
-#         w = b.shape[3]
-#         for eye_h in range(int(h*2/10),int(h*4.5/10)):
-#             for eye_left in range(int(w*2/10 ),int(w*4/10)):
-#                 b[0][0][eye_h][eye_left] = 2
-#             for eye_right in range(int(w*6/10 ),int(w*8/10)):
-#                 b[0][0][eye_h][eye_right] = 2
-
-#         for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
-#             for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
-#                 b[0][0][lip_h][lip_w] = 2
-          
-#         weights_0 = b
-#         pool1 = torch.nn.AvgPool2d(4)
-#         pool2 = torch.nn.AvgPool2d(2)
-#         pool3 = torch.nn.AvgPool2d(3,stride=1)
-#         weights_0 = pool1(weights_0)
-#         weights_0 = pool2(weights_0)
-#         weights_0 = pool3(weights_0)
-         
-        
+        ###################################################################
+                 
         pred_real = netD(real)
-        loss_D_real = (self.criterionGAN(pred_real, True)* weights_0)[weights_0 > 0].mean()
+#         loss_D_real = (self.criterionGAN(pred_real, True)* weights_0)[weights_0 > 0].mean()
+        loss_D_real = self.criterionGAN(pred_real, True)
         # Fake
         pred_fake = netD(fake.detach())
-        loss_D_fake = (self.criterionGAN(pred_fake, False)* weights_0)[weights_0 > 0].mean()
+#         loss_D_fake = (self.criterionGAN(pred_fake, False)* weights_0)[weights_0 > 0].mean()
+        loss_D_fake = self.criterionGAN(pred_fake, False)
         #########################################################################
         # Combined loss and calculate gradients
         loss_D = (loss_D_real + loss_D_fake) * 0.5
@@ -238,55 +216,7 @@ class CycleGANModel(BaseModel):
     def backward_G(self):
         """Calculate the loss for generators G_A and G_B"""
         #########################################
-#         import numpy as np
-        
-#         cuda0 = torch.device('cuda:0')
-#         a = torch.ones([1, 3, 256, 256], dtype=torch.float, device=cuda0)
-#         h = a.shape[2]
-#         w = a.shape[3]
-#         for eye_h in range(int(h*2/10 ),int(h*4.5/10)):
-#             for eye_left in range(int(w*2/10 ),int(w*4/10)):
-#                 a[0][0][eye_h][eye_left] = 2
-#                 a[0][1][eye_h][eye_left] = 2
-#                 a[0][2][eye_h][eye_left] = 2
-#             for eye_right in range(int(w*6/10 ),int(w*8/10)):
-#                 a[0][0][eye_h][eye_right] = 2
-#                 a[0][1][eye_h][eye_right] = 2
-#                 a[0][2][eye_h][eye_right] = 2
 
-#         for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
-#             for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
-#                 a[0][0][lip_h][lip_w] = 2
-#                 a[0][1][lip_h][lip_w] = 2
-#                 a[0][2][lip_h][lip_w] = 2
-                
-#         weights_1 = a        
-#         cuda0 = torch.device('cuda:0')
-#         b = torch.ones([1, 1, 256, 256], dtype=torch.float, device=cuda0)
-#         h = b.shape[2]
-#         w = b.shape[3]
-#         for eye_h in range(int(h*2/10),int(h*4.5/10)):
-#             for eye_left in range(int(w*2/10 ),int(w*4/10)):
-#                 b[0][0][eye_h][eye_left] = 2
-#             for eye_right in range(int(w*6/10 ),int(w*8/10)):
-#                 b[0][0][eye_h][eye_right] = 2
-
-#         for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
-#             for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
-#                 b[0][0][lip_h][lip_w] = 2
-                
-#         weights_0 = b
-        
-        
-#         pool1 = torch.nn.AvgPool2d(4)
-#         pool2 = torch.nn.AvgPool2d(2)
-#         pool3 = torch.nn.AvgPool2d(3,stride=1)
-#         weights_0 = pool1(weights_0)
-#         weights_0 = pool2(weights_0)
-#         weights_0 = pool3(weights_0)
-        
-        #weights_1 = torch.ones([1, 3, 256, 256], dtype=torch.int, device=cuda0)
-        #weights_1 = torch.ones(3, 256, 256) #create test weights all 1s
         #########################################
         lambda_idt = self.opt.lambda_identity
         lambda_A = self.opt.lambda_A
@@ -304,11 +234,11 @@ class CycleGANModel(BaseModel):
             self.loss_idt_B = 0
 
         # GAN loss D_A(G_A(A))
-        self.loss_G_A = (self.criterionGAN(self.netD_A(self.fake_B), True)* weights_0)[weights_0 > 0].mean()
-#        self.loss_G_A = (self.criterionGAN(self.netD_A(self.fake_B), True)).mean()
+#         self.loss_G_A = (self.criterionGAN(self.netD_A(self.fake_B), True)* weights_0)[weights_0 > 0].mean()
+        self.loss_G_A = self.criterionGAN(self.netD_A(self.fake_B), True))
         # GAN loss D_B(G_B(B))
-        self.loss_G_B = (self.criterionGAN(self.netD_B(self.fake_A), True)* weights_0)[weights_0 > 0].mean()
-#        self.loss_G_B = (self.criterionGAN(self.netD_B(self.fake_A), True)).mean()
+#         self.loss_G_B = (self.criterionGAN(self.netD_B(self.fake_A), True)* weights_0)[weights_0 > 0].mean()
+       self.loss_G_B = self.criterionGAN(self.netD_B(self.fake_A), True))
         #############################################
 #         # Forward cycle loss || G_B(G_A(A)) - A||
 #         self.loss_cycle_A = self.criterionCycle(self.rec_A, self.real_A) * lambda_A
