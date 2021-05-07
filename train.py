@@ -96,14 +96,14 @@ if __name__ == '__main__':
         print('End of epoch %d / %d \t Time Taken: %d sec' % (epoch, opt.n_epochs + opt.n_epochs_decay, time.time() - epoch_start_time))
   
 #Graphs for losses
-epoch_total = opt.n_epochs + opt.n_epochs_decay
-fig,axes = plt.subplots(4,2,figsize=(16,22))
-for i, ax in enumerate(axes.flat, start=1):
-  vals = d[keys[i-1]]
-  ax.plot(np.arange(epoch_total),vals)
-  ax.set_title(keys[i-1])
-  ax.set_xlabel('epoch')
-  ax.set_ylabel('Loss value')
+# epoch_total = opt.n_epochs + opt.n_epochs_decay
+# fig,axes = plt.subplots(4,2,figsize=(16,22))
+# for i, ax in enumerate(axes.flat, start=1):
+#   vals = d[keys[i-1]]
+#   ax.plot(np.arange(epoch_total),vals)
+#   ax.set_title(keys[i-1])
+#   ax.set_xlabel('epoch')
+#   ax.set_ylabel('Loss value')
 
-fig.tight_layout()
-plt.show();
+# fig.tight_layout()
+# plt.show();
