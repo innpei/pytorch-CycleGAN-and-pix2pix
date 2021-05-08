@@ -5,26 +5,26 @@ from .base_model import BaseModel
 from . import networks
 import numpy as np
         
-cuda0 = torch.device('cuda:0')
-#a = torch.ones([1, 3, 256, 256], dtype=torch.float, device=cuda0)
-a = torch.ones([1, 3, 64, 64], dtype=torch.float, device=cuda0)
-h = a.shape[2]
-w = a.shape[3]
-for eye_h in range(int(h*2/10 ),int(h*4.5/10)):
-    for eye_left in range(int(w*2/10 ),int(w*4/10)):
-        a[0][0][eye_h][eye_left] = 7
-        a[0][1][eye_h][eye_left] = 7
-        a[0][2][eye_h][eye_left] = 7
-    for eye_right in range(int(w*6/10 ),int(w*8/10)):
-        a[0][0][eye_h][eye_right] = 7
-        a[0][1][eye_h][eye_right] = 7
-        a[0][2][eye_h][eye_right] = 7
-for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
-    for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
-        a[0][0][lip_h][lip_w] = 7
-        a[0][1][lip_h][lip_w] = 7
-        a[0][2][lip_h][lip_w] = 7
-weights_1 = a        
+# cuda0 = torch.device('cuda:0')
+# #a = torch.ones([1, 3, 256, 256], dtype=torch.float, device=cuda0)
+# a = torch.ones([1, 3, 64, 64], dtype=torch.float, device=cuda0)
+# h = a.shape[2]
+# w = a.shape[3]
+# for eye_h in range(int(h*2/10 ),int(h*4.5/10)):
+#     for eye_left in range(int(w*2/10 ),int(w*4/10)):
+#         a[0][0][eye_h][eye_left] = 7
+#         a[0][1][eye_h][eye_left] = 7
+#         a[0][2][eye_h][eye_left] = 7
+#     for eye_right in range(int(w*6/10 ),int(w*8/10)):
+#         a[0][0][eye_h][eye_right] = 7
+#         a[0][1][eye_h][eye_right] = 7
+#         a[0][2][eye_h][eye_right] = 7
+# for lip_h in range(int(h*7/10 ),int(h*8.5/10)): 
+#     for lip_w in range(int(w*3.5/10 ),int(w*6.5/10)):
+#         a[0][0][lip_h][lip_w] = 7
+#         a[0][1][lip_h][lip_w] = 7
+#         a[0][2][lip_h][lip_w] = 7
+# weights_1 = a        
 
 #b = torch.ones([1, 1, 256, 256], dtype=torch.float, device=cuda0)
 # b = torch.ones([1, 1, 64, 64], dtype=torch.float, device=cuda0)
@@ -146,8 +146,8 @@ class CycleGANModel(BaseModel):
             # define loss functions
             self.criterionGAN = networks.GANLoss(opt.gan_mode).to(self.device)  # define GAN loss.
             ################
-            #before: self.criterionCycle = torch.nn.L1Loss()
-            self.criterionCycle = torch.nn.L1Loss(reduction = "none") #changing loss function for generator!!!
+            self.criterionCycle = torch.nn.L1Loss()
+#             self.criterionCycle = torch.nn.L1Loss(reduction = "none") #changing loss function for generator!!!
             ################
             self.criterionIdt = torch.nn.L1Loss()
             # initialize optimizers; schedulers will be automatically created by function <BaseModel.setup>.
@@ -241,13 +241,13 @@ class CycleGANModel(BaseModel):
         self.loss_G_B = self.criterionGAN(self.netD_B(self.fake_A), True)
         #############################################
 #         # Forward cycle loss || G_B(G_A(A)) - A||
-#         self.loss_cycle_A = self.criterionCycle(self.rec_A, self.real_A) * lambda_A
+        self.loss_cycle_A = self.criterionCycle(self.rec_A, self.real_A) * lambda_A
 #         # Backward cycle loss || G_A(G_B(B)) - B||
-#         self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
+        self.loss_cycle_B = self.criterionCycle(self.rec_B, self.real_B) * lambda_B
         # Forward cycle loss || G_B(G_A(A)) - A||
-        self.loss_cycle_A = (self.criterionCycle(self.rec_A, self.real_A)* weights_1)[weights_1 > 0].mean() * lambda_A 
+#         self.loss_cycle_A = (self.criterionCycle(self.rec_A, self.real_A)* weights_1)[weights_1 > 0].mean() * lambda_A 
         # Backward cycle loss || G_A(G_B(B)) - B||
-        self.loss_cycle_B = (self.criterionCycle(self.rec_B, self.real_B) * weights_1)[weights_1 > 0].mean() * lambda_B
+#         self.loss_cycle_B = (self.criterionCycle(self.rec_B, self.real_B) * weights_1)[weights_1 > 0].mean() * lambda_B
         ############################################
         # combined loss and calculate gradients
         self.loss_G = self.loss_G_A + self.loss_G_B + self.loss_cycle_A + self.loss_cycle_B + self.loss_idt_A + self.loss_idt_B
