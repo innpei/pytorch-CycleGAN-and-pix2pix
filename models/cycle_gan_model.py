@@ -7,7 +7,7 @@ import numpy as np
         
 cuda0 = torch.device('cuda:0')
 #Code for cycle consistency loss (in generator) JACK
-a = torch.ones((1,3,256,256))
+a = torch.ones((1,3,256,256), device=cuda0)
 h = a.shape[2]
 w = a.shape[3]
 for eye_h in range(int(h*7/20 ),int(h*9/20)):
@@ -28,7 +28,7 @@ for lip_h in range(int(h*12/20 ),int(h*14/20)):
 weights_1 = a        
 
 #Code for GAN loss (in discriminator) JACK
-b = torch.ones((1,1,256,256))
+b = torch.ones((1,1,256,256), device=cuda0)
 h = b.shape[2]
 w = b.shape[3]
 for eye_h in range(int(h*7/20 ),int(h*9/20)):
