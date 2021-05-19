@@ -28,38 +28,30 @@ for lip_h in range(int(h*12/20 ),int(h*14/20)):
 weights_1 = a        
 
 #Code for GAN loss (in discriminator) JACK
-b = torch.ones((1,1,256,256), device=cuda0)
-h = b.shape[2]
-w = b.shape[3]
-for eye_h in range(int(h*7/20 ),int(h*9/20)):
-    for eye_left in range(int(w*6/20),int(w*9/20)):
-        b[0][0][eye_h][eye_left] = 9
-    for eye_right in range(int(w*11/20),int(w*14/20)):
-        b[0][0][eye_h][eye_right] = 9
+# b = torch.ones((1,1,256,256), device=cuda0)
+# h = b.shape[2]
+# w = b.shape[3]
+# for eye_h in range(int(h*7/20 ),int(h*9/20)):
+#     for eye_left in range(int(w*6/20),int(w*9/20)):
+#         b[0][0][eye_h][eye_left] = 9
+#     for eye_right in range(int(w*11/20),int(w*14/20)):
+#         b[0][0][eye_h][eye_right] = 9
         
-for lip_h in range(int(h*12/20 ),int(h*14/20)): 
-    for lip_w in range(int(w*8/20 ),int(w*12/20)):
-        b[0][0][lip_h][lip_w] = 9
-weights_0 = b
+# for lip_h in range(int(h*12/20 ),int(h*14/20)): 
+#     for lip_w in range(int(w*8/20 ),int(w*12/20)):
+#         b[0][0][lip_h][lip_w] = 9
+# weights_0 = b
         
-        
-#pool1 = torch.nn.AvgPool2d(4)
-#pool2 = torch.nn.AvgPool2d(2)
-#pool3 = torch.nn.AvgPool2d(3,stride=1)
-#weights_0 = pool1(weights_0)
-#weights_0 = pool2(weights_0)
-#weights_0 = pool3(weights_0)
-
-pool1 = torch.nn.AvgPool2d(4, stride=2, padding=1)
-pool2 = torch.nn.AvgPool2d(4, stride=2, padding=1)
-pool3 = torch.nn.AvgPool2d(4, stride=2, padding=1)
-pool4 = torch.nn.AvgPool2d(4, stride=1, padding=1)
-pool5 = torch.nn.AvgPool2d(4, stride=1, padding=1)
-weights_0 = pool1(weights_0)
-weights_0 = pool2(weights_0)
-weights_0 = pool3(weights_0)
-weights_0 = pool4(weights_0)
-weights_0 = pool5(weights_0)
+# pool1 = torch.nn.AvgPool2d(4, stride=2, padding=1)
+# pool2 = torch.nn.AvgPool2d(4, stride=2, padding=1)
+# pool3 = torch.nn.AvgPool2d(4, stride=2, padding=1)
+# pool4 = torch.nn.AvgPool2d(4, stride=1, padding=1)
+# pool5 = torch.nn.AvgPool2d(4, stride=1, padding=1)
+# weights_0 = pool1(weights_0)
+# weights_0 = pool2(weights_0)
+# weights_0 = pool3(weights_0)
+# weights_0 = pool4(weights_0)
+# weights_0 = pool5(weights_0)
 
 
 class CycleGANModel(BaseModel):
@@ -191,12 +183,12 @@ class CycleGANModel(BaseModel):
         ###################################################################
                  
         pred_real = netD(real)
-        loss_D_real = (self.criterionGAN(pred_real, True)* weights_0).mean()
-#         loss_D_real = self.criterionGAN(pred_real, True)
+#         loss_D_real = (self.criterionGAN(pred_real, True)* weights_0).mean()
+        loss_D_real = self.criterionGAN(pred_real, True)
         # Fake
         pred_fake = netD(fake.detach())
-        loss_D_fake = (self.criterionGAN(pred_fake, False)* weights_0).mean()
-#         loss_D_fake = self.criterionGAN(pred_fake, False)
+#         loss_D_fake = (self.criterionGAN(pred_fake, False)* weights_0).mean()
+        loss_D_fake = self.criterionGAN(pred_fake, False)
         #########################################################################
         # Combined loss and calculate gradients
         loss_D = (loss_D_real + loss_D_fake) * 0.5
@@ -234,11 +226,11 @@ class CycleGANModel(BaseModel):
             self.loss_idt_B = 0
 
         # GAN loss D_A(G_A(A))
-        self.loss_G_A = (self.criterionGAN(self.netD_A(self.fake_B), True)* weights_0).mean()
-#         self.loss_G_A = self.criterionGAN(self.netD_A(self.fake_B), True)
+#         self.loss_G_A = (self.criterionGAN(self.netD_A(self.fake_B), True)* weights_0).mean()
+        self.loss_G_A = self.criterionGAN(self.netD_A(self.fake_B), True)
         # GAN loss D_B(G_B(B))
-        self.loss_G_B = (self.criterionGAN(self.netD_B(self.fake_A), True)* weights_0).mean()
-#         self.loss_G_B = self.criterionGAN(self.netD_B(self.fake_A), True)
+#         self.loss_G_B = (self.criterionGAN(self.netD_B(self.fake_A), True)* weights_0).mean()
+        self.loss_G_B = self.criterionGAN(self.netD_B(self.fake_A), True)
         #############################################
 #         # Forward cycle loss || G_B(G_A(A)) - A||
 #         self.loss_cycle_A = self.criterionCycle(self.rec_A, self.real_A) * lambda_A
